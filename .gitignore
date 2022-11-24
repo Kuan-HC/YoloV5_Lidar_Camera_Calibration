@@ -1,0 +1,10 @@
+# ros build files
+build
+devel
+
+# other
+.vscode
+.catkin_workspace
+
+src/rgb_camera/MvImport/__pycache__
+

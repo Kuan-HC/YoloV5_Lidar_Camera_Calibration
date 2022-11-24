@@ -156,7 +156,7 @@ class RGB_Img_Detect:
         self.model.to(device)
         
     def init_ros(self):
-        rospy.init_node('rgb_detect', anonymous=True)
+        rospy.init_node('rgb_image', anonymous=True)
         self.pub = rospy.Publisher('rgb_camera/image', Image, queue_size=1)
         self.bridge = CvBridge()
         self.rate = rospy.Rate(10) #10 Hz
@@ -178,12 +178,12 @@ class RGB_Img_Detect:
     def show(self):
         print("[+] Show camera image!")
         self.init_ros()
-        cv2.namedWindow('RGB image, Press ESC to close', cv2.WINDOW_NORMAL)
+        cv2.namedWindow('Show image, ESC to close', cv2.WINDOW_NORMAL)
 
         while not rospy.is_shutdown():  
             ret, frame = self.read()
             if ret == True:
-                cv2.imshow('RGB image, Press ESC to close', frame)
+                cv2.imshow('Show image, ESC to close', frame)
                 
                 '''
                 ros send image msg
@@ -208,7 +208,7 @@ class RGB_Img_Detect:
         self.init_model()
 
         print("[+] Object detect!")           
-        cv2.namedWindow('Detect, Press ESC to close', cv2.WINDOW_NORMAL)
+        cv2.namedWindow('Detect image, ESC to close', cv2.WINDOW_NORMAL)
         classes = self.model.names # Get the name of label index
 
         while not rospy.is_shutdown():        
@@ -231,9 +231,10 @@ class RGB_Img_Detect:
                     
                     label_font = cv2.FONT_HERSHEY_SIMPLEX #Font for the label.
                     cv2.rectangle(frame, (x1, y1), (x2, y2), bgr, 2) #Plot the boxes
-                    cv2.circle(frame, (x1 + x2 >> 1, y1 + y2 >> 1), 10, (0, 0, 255), 2)  # position, radius, color thickness(-1 fill) 
-                    cv2.putText(frame, classes[label], (x1, y1), label_font, 2, bgr, 2) #Put a label over box.                
-                cv2.imshow('Detect, Press ESC to close', frame)
+                    cv2.circle(frame, (x1 + x2 >> 1, y1 + y2 >> 1), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
+                    cv2.putText(frame, "{}: {:.2f}".format(classes[label], cord[4]), (x1, y1 -10 ), cv2.FONT_HERSHEY_DUPLEX, 1, bgr, 1) #Put a label over box.                
+                cv2.imshow('Detect image, ESC to close', frame)
+
                 '''
                 ros send image msg
                 '''
@@ -247,6 +248,7 @@ class RGB_Img_Detect:
             key = cv2.waitKey(10)
             if key == 27:
                 break
+
         self.close()
              
             
