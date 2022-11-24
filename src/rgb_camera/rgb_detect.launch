@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="rgb_detect" pkg="rgb_camera"  type="rgb_image_detect.py" output="screen" required="true"/>
+
+</launch>
