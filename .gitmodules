@@ -1,3 +1,7 @@
 [submodule "src/yolov5"]
 	path = src/yolov5
 	url = https://github.com/ultralytics/yolov5.git
+
+[submodule "src/ouster-ros"]
+	path = src/ouster-ros
+	url = https://github.com/ouster-lidar/ouster-ros.git

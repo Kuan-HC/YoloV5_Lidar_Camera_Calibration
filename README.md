@@ -3,7 +3,7 @@
 <b>OS</b>: Ubuntu 18.04 LTS  
 
 ## Goals
-Utlize rgb, thermo camera and lidar for detection
+Project lidar points to rgb images
 
 ## Dependencies
 
@@ -15,7 +15,7 @@ In this project,  environment <b>`Thermo'</b> is created
 > sudo apt-get install xterm
 
 * <b>Libraries  </b>  
-This project requires following packages: Robosense Lidar, HIKRobot Camera, IFCNN and OpenPCdet.  
+This project requires following packages: Ouster Lidar, HIKRobot Camera.  
 Make sure all packages are correctly configured. Detailed hardwardsetting are list [below](#1).
 
 
@@ -32,22 +32,26 @@ cd ~/Thermal_Cognitive/src/yolov5/
 git checkout v6.2  
 pip install -r requirements.txt  
 
-3.
+3. Install Ouster Lidar
+source the ROS environemt
+> source /opt/ros/melodic/setup.bash   
 
+catkin_make command from within the catkin workspace
 
 4. Build project
-> cd ~/Thermal_Cognitive  
-catkin_make
+
+> cd ~/Lidar_Projection  
+catkin_make --cmake-args -DCMAKE_BUILD_TYPE=Release  
+
 
 5. Launch
 > conda activate thermo  
-cd ~/Thermal_Cognitive/shell 
-./dataCapture.sh 
+cd ~/Lidar_Projection/shell 
+./lidar_camera.sh 
 
-<img src="hardware_setting/img/readme_2.png" width = "800">
 
 <h2 id="1"> Settings </h1> 
 
 * [HIKRobot RGB Camera](./hardware_setting/hikrobot_rgb.md)
 * [YOLOV5](https://github.com/ultralytics/yolov5)
-* [Ouster Lidar Device](./hardware_setting/ouster_lidar_config.md)
+* [Ouster Lidar](./hardware_setting/ouster_lidar_config.md)

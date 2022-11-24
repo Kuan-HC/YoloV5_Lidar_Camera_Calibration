@@ -39,44 +39,40 @@ With lidar IP, we can check lidar information via web browser.
 
 <img src="img/lidar_localIPV4_6.png" width = "500">
 
-<br>5. Set lidar IP</br>
-
-Computer and Lidar are not in the same network segment, therefore, change lidar IP.
-> sudo dnsmasq -C /dev/null -kd -F 10.5.5.50,10.5.5.100 -i 
-<b>device-name</b> --bind-dynamic
-
-This could take couple minutes.
-
-<img src="img/lidar_localIPV4_7.png" width = "600">
-
-Lidar IP is set to 10.5.5.99
-
-check lidar IP
-> avahi-browse -lr _roger._tcp
-
-<img src="img/lidar_localIPV4_8.png" width = "600">
-
-<br>6. Check Lidar connection</br>
-
-ping lidar or via web-browser
-> ping -c5 <b>lidar-ip</b>  
-
-<img src="img/lidar_localIPV4_9.png" width = "600">
-<br></br>
-<img src="img/lidar_localIPV4_10.png" width = "500">
-
-<br><h2 id="2"> Install Ouster ROS package </h2></br>
 <br>1. create ros workspace </br>
 > mkdir -p Lidar_Project/src
 
 <br>2. add `ouster_example` to `catkin_ws/src` folder </br>
 <b>Tag</b>: 20220608
 > cd ~/Lidar_Project/src  
-git clone --depth 1 --branch 20220608 https://github.com/ouster-lidar/ouster_example.git
+git clone https://github.com/ouster-lidar/ouster-ros
 
-<br>3. build package </br>
-> cd ~/Lidar_Project
-catkin_make  
+<br>3. requierments and dependencies </br>
+```
+sudo apt install -y                     \
+    ros-$ROS_DISTRO-pcl-ros             \
+    ros-$ROS_DISTRO-rviz                \
+    ros-$ROS_DISTRO-tf2-geometry-msgs
+```
+where `$ROS-DISTRO` is either `melodic` or `noetic`.
+
+Additional dependenices:
+```
+sudo apt install -y \
+    build-essential \
+    libeigen3-dev   \
+    libjsoncpp-dev  \
+    libspdlog-dev   \
+    cmake
+```
+<br>4. build package </br>
+ source the ROS environemt
+ > source /opt/ros/ros-distro/setup.bash # replace ros-distro with 'melodic' or 'noetic'  
+
+catkin_make command from within the catkin workspace
+
+> cd ~/Lidar_Project  
+catkin_make --cmake-args -DCMAKE_BUILD_TYPE=Release  
 
 <h2 id="3"> Launch Ourster ROS and Visuazlize Point-Cloud Data </h2>
 <br>1. source workspace </br>
@@ -94,28 +90,21 @@ add `source ~/Lidar_Project/devel/setup.bash` to the bottom.
 <br>2. Launch ouster launch file </br>
 open a terminal in folder ouster_ros
 
-> roslaunch ouster_ros ouster.launch sensor_hostname:=<LiDAR_IP_Address> udp_dest:=
-<PC_IP_Address> viz:=true image:=true metadata:=<Json_File_Path>
+> roslaunch ouster_ros sensor.launch sensor_hostname:=<sensor ost name>  
 
 We set sensor ip to 10.5.5.99 and pc ip to 10.5.5.1 in the previous chapter. In our case, to launch ouster launch file, the command would be like below. 
 
 `In this version, it now requires the user to specify a path for metadata output instead of defaulting to $ROS_HOME`
 
-> roslaunch ouster.launch sensor_hostname:=10.5.5.99 udp_dest:=10.5.5.1 viz:=true image:=true metadata:=meta.json
+> roslaunch ouster_ros sensor.launch sensor_hostname:=169.254.39.51  viz:=true 
 
 
 Here the arguments are:
 * `sensor_hostname`:= hostname or IP in dotted decimal form of the LiDAR
-* `udp_dest`:= hostname or IP where the sensor will send data packets, which is the PC IP
-address
 * `viz`:= whether to run rviz
-* `image`:= whether publish range/intensity/ambient image topic
-* `lidar_mode`:= LiDAR's resolution and rate: either 512x10, 512x20, 1024x10, 1024x20, or
-2048x10, default is 1024x10
+
 
 If launch successfully, then both depth image and point cloud can be visualized via Rviz.
 
 <img src="img/lidar_ros_3.png" width = "600">
 
-## Note:
-When ouster sensor was launch, it is required to specify lidar and pc IP address. It is not necessary to change lidar ip to 10.5.5. XX., but it it necessary to manual change PC IPv4 to 10.5.5.1.
