@@ -22,7 +22,10 @@ Make sure all packages are correctly configured. Detailed hardwardsetting are li
 
 ## Installation
 1. clone this project to home folder and init submodule
-> cd ~/Thermal_Cognitive  
+> cd ~/Lidar_Projection  
+git submodule init  
+git submodule update  
+cd src/ouster-ros  
 git submodule init  
 git submodule update
 
@@ -46,7 +49,7 @@ catkin_make --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 5. Launch
 > conda activate thermo  
-cd ~/Lidar_Projection/shell 
+cd ~/Lidar_Projection/shell  
 ./lidar_camera.sh 
 
 

@@ -43,9 +43,9 @@ With lidar IP, we can check lidar information via web browser.
 > mkdir -p Lidar_Project/src
 
 <br>2. add `ouster_example` to `catkin_ws/src` folder </br>
-<b>Tag</b>: 20220608
+
 > cd ~/Lidar_Project/src  
-git clone https://github.com/ouster-lidar/ouster-ros
+git clone --recurse-submodules https://github.com/ouster-lidar/ouster-ros.git
 
 <br>3. requierments and dependencies </br>
 ```
@@ -67,7 +67,7 @@ sudo apt install -y \
 ```
 <br>4. build package </br>
  source the ROS environemt
- > source /opt/ros/ros-distro/setup.bash # replace ros-distro with 'melodic' or 'noetic'  
+ > source /opt/ros/melodic/setup.bash   
 
 catkin_make command from within the catkin workspace
 
