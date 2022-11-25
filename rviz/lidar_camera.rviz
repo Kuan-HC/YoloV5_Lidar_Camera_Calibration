@@ -35,7 +35,7 @@ Panels:
       Expanded:
         - /PointCloud21
       Splitter Ratio: 0.5
-    Tree Height: 874
+    Tree Height: 441
 Preferences:
   PromptSaveOnExit: false
 Toolbars:
@@ -48,23 +48,13 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        os_imu:
-          Value: false
-        os_lidar:
-          Value: false
-        os_sensor:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        os_sensor:
-          os_imu:
-            {}
-          os_lidar:
-            {}
+        {}
       Update Interval: 0
       Value: true
     - Class: rviz/Image
@@ -100,8 +90,8 @@ Visualization Manager:
       Queue Size: 1
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.019999999552965164
-      Style: Flat Squares
+      Size (m): 0.009999999776482582
+      Style: Points
       Topic: /ouster/points
       Unreliable: false
       Use Fixed Frame: true
@@ -135,7 +125,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.784696578979492
+      Distance: 2.045008897781372
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -150,10 +140,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5247966051101685
+      Pitch: 0.11479563266038895
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.0285818576812744
+      Yaw: 2.9485857486724854
     Saved: ~
 Window Geometry:
   Displays:

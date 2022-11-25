@@ -32,12 +32,18 @@ device ip = 10.5.5.1
 
 <img src="img/lidar_localIPV4_5.png" width = "600">
 
-`Ethernet device: enp2s0 connects to Ouster sensor. Lidar address 169.254.39.51`
+`Ethernet device: enx00143d14e333 connects to Ouster sensor. Lidar address 169.254.140.92`
 
 If IPv4 not shown, please turn off weired connect, and try again.  
 With lidar IP, we can check lidar information via web browser.
 
 <img src="img/lidar_localIPV4_6.png" width = "500">
+
+<br>5. Lidar connection</br>
+Run this command to check lidar connection
+> ping -c5 169.254.140.92  
+
+<img src="img/lidar_localIPV4_7.png" width = "600">
 
 <br>1. create ros workspace </br>
 > mkdir -p Lidar_Project/src
