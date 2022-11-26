@@ -14,8 +14,7 @@ import numpy as np
 '''
 This node is for other lidar devices whose scan range can't be configured
 '''
-
-
+max_range = 50.0
 
 def callback(msg):
     # obtain point cloud data
@@ -23,7 +22,7 @@ def callback(msg):
     
     for p in pc2.read_points(msg, field_names = ("x", "y", "z", "intensity"), skip_nans=True):
         
-        if p[0] > 0.0 and p[0] < 10.0:  # x range must  > 0.0 meter
+        if p[0] > 0.0 and p[0] < max_range:  # x range must  > 0.0 meter
             #print(p)
             pcl_lst.append(p)
 
@@ -58,9 +57,10 @@ def callback(msg):
 if __name__ == '__main__':
     rospy.init_node('pcl_filter', anonymous=True)
     print("[+] Point Cloud Filter Node")  
+    print("[+] Make sure the max_range is set, current valus:{}".format(max_range))
 
     filter_pcl = rospy.Publisher('pcl_filter', PointCloud2, queue_size=10)
-    rospy.Subscriber("/ouster/points", PointCloud2, callback)  
+    rospy.Subscriber("/ouster/points", PointCloud2, callback, queue_size=1)  
     
     rospy.spin()
      

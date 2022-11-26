@@ -129,7 +129,7 @@ class RGB_Img_Detect:
             self.width = 640
             self.height = 512
             fps = 50
-            self.cap = cv2.VideoCapture(2)
+            self.cap = cv2.VideoCapture(0)
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)  # 设置图像宽度
             self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)  # 设置图像高度
             self.cap.set(cv2.CAP_PROP_FPS , fps)
@@ -289,5 +289,5 @@ if __name__ == "__main__":
     Defautl HIK camera out put is rectified image, if you want raw image please select
     RGB_Img_Detect(HIK_CAMERA, False)
     '''
-    device = RGB_Img_Detect(HIK_CAMERA)
+    device = RGB_Img_Detect(WEB_CAMERA)
     device.show()

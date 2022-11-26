@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import sys
 from ctypes import *
@@ -20,6 +23,7 @@ class pcl_projection:
         self.max_depth = max_depth
         self.min_depth = min_depth
         self.scale = (max_depth - min_depth)/10; 
+        print("[+] load intrinsic and extrinsic matrices")
 
 
     def getColor(self, depth):
@@ -54,12 +58,12 @@ class pcl_projection:
     def pcd_to_img(self, img_path, pcd_path):
         
         pcd = np.loadtxt(pcd_path)
-        print("Pcd length", len(pcd))
+        print("[+] Pcd length", len(pcd))
         
         frame = cv2.imread(img_path)
         width = frame.shape[1]
         height = frame.shape[0]
-        print("Image height: {}, widht: {}".format(height, width))
+        print("[+] Image widht: {}, height: {}".format(width, height))
 
         cv2.namedWindow('img', cv2.WINDOW_NORMAL)        
         
@@ -73,7 +77,7 @@ class pcl_projection:
                 cv2.circle(frame, (X, Y), 1, bgr, -1)  # position, radius, color thickness(-1 fill) 
                 count += 1
             
-        print("Total {} points, cost {:.3f} seconds".format(count, time.time() - t))
+        print("[+] Total {} points, cost {:.3f} seconds".format(count, time.time() - t))
         cv2.imshow("img", frame)
 
         key = cv2.waitKey(0)
@@ -99,7 +103,6 @@ if __name__ == "__main__":
     args = get_args()
     pcl = pcl_projection()
     pcl.pcd_to_img(args.img, args.pcd)
-
 
     
 
