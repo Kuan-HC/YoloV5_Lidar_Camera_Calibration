@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="pcl_project" pkg="rgb_camera"  type="pcl_filter.py" output="screen" required="true"/>
+
+</launch>

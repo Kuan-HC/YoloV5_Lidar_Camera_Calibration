@@ -1,71 +1,77 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 15 17:36:49 2021
-
-@author: stephen
-"""
-import rospy
-from sensor_msgs.msg import PointCloud2
-from sensor_msgs.msg import PointField
-import sensor_msgs.point_cloud2 as pc2
+import os
+import sys
+from ctypes import *
+import cv2
 import numpy as np
+import argparse
 
-'''
-This node is for other lidar devices whose scan range can't be configured
-'''
+abs = os.path.abspath(__file__) #current path
+parent_path = os.path.dirname(abs)
+parent_path = os.path.dirname(parent_path)
+package_path = parent_path
 
 
+class pcl_projection:
+    def __init__(self):
+        self.init_parameters()             
 
-def callback(msg):
-    # obtain point cloud data
-    pcl_lst = []
-    
-    for p in pc2.read_points(msg, field_names = ("x", "y", "z", "intensity"), skip_nans=True):
+    def init_parameters(self):
+        self.intrinsic = np.loadtxt("{path}/Calibration/mtx.txt".format(path = package_path))
+        self.extrinsic = np.loadtxt("{path}/Calibration/extrinsic.txt".format(path = package_path))
+        print("extrinsic", self.extrinsic)
+        self.transM = np.dot(self.intrinsic, self.extrinsic)  
+
+    def getXY(self, msg):
+        coord = np.zeros((4,1), dtype = np.float32)
+        coord[0] = msg[0]
+        coord[1] = msg[1]
+        coord[2] = msg[2]
+        coord[3] = 1
+        temp = np.dot(self.transM, coord)
+        x = temp[0] / temp[2]
+        y = temp[1] / temp[2]
+
+        return int(x), int(y)
         
-        if p[0] > 0.0 :  # x range must  > 0.0 meter
-            #print(p)
-            pcl_lst.append(p)
 
-    pcl_np = np.array(pcl_lst).reshape(-1, 4)
-
-
-    ######## visualize converted point cloud
-    pt_cloud = PointCloud2()
-    pt_cloud.header.frame_id = msg.header.frame_id
-    pt_cloud.header.stamp = msg.header.stamp
-
-    pt_cloud.height = 1
-    pt_cloud.width = pcl_np.shape[0]
+    def pcd_to_img(self, img_path, pcd_path):
         
-    dtype = np.float32
-    itemsize = np.dtype(dtype).itemsize
+        pcd = np.loadtxt(pcd_path)
+        print("Pcd length", len(pcd))
         
-    pt_cloud.fields = [
-        PointField('x', 0, PointField.FLOAT32, 1),
-        PointField('y', 4, PointField.FLOAT32, 1),
-        PointField('z', 8, PointField.FLOAT32, 1),
-        PointField('intensity', 12, PointField.FLOAT32, 1)]
-    pt_cloud.is_bigendian = False
-    pt_cloud.point_step = itemsize * 4
-    pt_cloud.row_step = itemsize * 4 *pcl_np.shape[0]
-    pt_cloud.is_dense = False
-    pt_cloud.data = np.asarray(pcl_np, np.float32).tobytes()
+        frame = cv2.imread(img_path)
+        width = frame.shape[1]
+        height = frame.shape[0]
+        print("Image height: {}, widht: {}".format(height, width))
+
+        cv2.namedWindow('img', cv2.WINDOW_NORMAL)        
         
-    filter_pcl.publish(pt_cloud)  
-        
-                
-if __name__ == '__main__':
-    rospy.init_node('pcl_project', anonymous=True)
-    print("[+] Point Cloud Filter Node")  
+        count = 0
+        for row in pcd:
+            if row[0] > 1.0:
+                X,Y = self.getXY(row)
+                #print("count:{}, X:{} U:{}".format(count, X,Y))
+                cv2.circle(frame, (X, Y), 1, (0, 0, 255), -1)  # position, radius, color thickness(-1 fill) 
+                count += 1
+            
+        print("Total {} points".format(count))
+        cv2.imshow("img", frame)
 
-    filter_pcl = rospy.Publisher('pcl_filter', PointCloud2, queue_size=10)
-    rospy.Subscriber("/ouster/points", PointCloud2, callback)  
-    
-    rospy.spin()
-     
+        key = cv2.waitKey(0)
+        if key == 27:
+            cv2.destroyAllWindows()
 
-       
-          
 
-    
+def get_args():
+    parser = argparse.ArgumentParser(description='pcd_visual')
+    parser.add_argument('--img', type=str, default='sample.png',help='img path')
+    parser.add_argument('--pcd', type=str, default='sample.pcd',help='pcd path')
+    args = parser.parse_args()
+    return args
+
+
+
+if __name__ == "__main__":        
+    args = get_args()
+    pcl = pcl_projection()
+    pcl.pcd_to_img(args.img, args.pcd)
