@@ -16,7 +16,7 @@ package_path = parent_path
 
 
 class pcl_projection:
-    def __init__(self, max_depth = 50, min_depth = 3):          
+    def __init__(self, max_depth = 20, min_depth = 0.5):          
         self.intrinsic = np.loadtxt("{path}/Calibration/mtx.txt".format(path = package_path))
         self.extrinsic = np.loadtxt("{path}/Calibration/extrinsic.txt".format(path = package_path))
         self.transM = np.dot(self.intrinsic, self.extrinsic)  

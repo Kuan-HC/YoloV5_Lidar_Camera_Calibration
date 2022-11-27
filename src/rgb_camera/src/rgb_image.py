@@ -154,6 +154,7 @@ class RGB_Img_Detect:
         
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model.to(device)
+        print("[+] Load Yolov5!")
         
     def init_ros(self):
         rospy.init_node('rgb_image', anonymous=True)
@@ -203,7 +204,6 @@ class RGB_Img_Detect:
 
     def detect(self):       
 
-        print("[+] Load Yolov5!")
         self.init_ros() 
         self.init_model()
 
@@ -289,5 +289,8 @@ if __name__ == "__main__":
     Defautl HIK camera out put is rectified image, if you want raw image please select
     RGB_Img_Detect(HIK_CAMERA, False)
     '''
-    device = RGB_Img_Detect(WEB_CAMERA)
+    device = RGB_Img_Detect(HIK_CAMERA)
     device.show()
+
+    
+

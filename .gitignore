@@ -7,4 +7,4 @@ devel
 .catkin_workspace
 
 src/rgb_camera/MvImport/__pycache__
-
+src/rgb_camera/src/__pycache__
