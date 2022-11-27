@@ -68,7 +68,7 @@ class fusion:
         # print("[+] image:", msg_img.header.stamp.to_sec())
         # print("[+] lidar:", msg_lidar.header.stamp.to_sec())     
 
-    def run(self):
+    def run(self, rad):
         classes = self.model.names # Get the name of label index
         print("[+] Lidar data projection")
         print("[+] Object detection")
@@ -86,12 +86,12 @@ class fusion:
             cords = results.xyxyn[0][:, :-1].cpu().numpy()
             
             # Point cloud projection on images save distance in array
-            dist = np.zeros((self.img_width, self.img_height), dtype = np.float32)
+            distArray = np.zeros((self.img_width, self.img_height), dtype = np.float32)
             for point in pc2.read_points(msg_lidar, field_names = ("x", "y", "z", "intensity"), skip_nans=True):
                 if point[0] >= self.min_depth and point[0] <= self.max_depth:
                     X,Y = self.projection.getXY(point)
                     if X >= 0 and X < self.img_width and Y >= 0 and Y < self.img_height:
-                        dist[X][Y] = point[0]
+                        distArray[X][Y] = point[0]
                         bgr = self.projection.getColor(point[0])
                         cv2.circle(cv_image, (X, Y), 1, bgr, -1)  # position, radius, color thickness(-1 fill) 
             
@@ -110,11 +110,30 @@ class fusion:
                     x2 = int(cord[2]*self.img_width)
                     y2 = int(cord[3]*self.img_height)
                     bgr = colors(label, True) # color of the box
+                    x_cen = int(x1 + x2 >> 1)
+                    y_cen = int(y1 + y2 >> 1)
                     
+                    # search in a 10 x 10 square for dist info
+                    x_min = max(0, x_cen - rad)
+                    x_max = min(self.img_width, x_cen + rad)
+                    y_min = max(0, y_cen - rad)
+                    y_max = min(self.img_height, y_cen + rad)
+                    
+                    dist = []
+                    for x in range(x_min, x_max):
+                        for y in range(y_min, y_max):
+                            if distArray[x][y] > 0.0:
+                                dist.append(distArray[x][y])
+                    if len(dist) != 0:
+                        obj_dist = np.median(dist)
+                    else:
+                        obj_dist = 0.0
+
                     label_font = cv2.FONT_HERSHEY_DUPLEX #Font for the label.
+                    cv2.putText(cv_image, "{:.2f} m".format(obj_dist), (x_cen - 10, y_cen -10 ), label_font, 1 , bgr, 2) #Put a label over box                                      
                     cv2.rectangle(cv_image, (x1, y1), (x2, y2), bgr, 2) #Plot the boxes
-                    cv2.circle(cv_image, (x1 + x2 >> 1, y1 + y2 >> 1), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
-                    cv2.putText(cv_image, "{}: {:.2f}".format(classes[label], cord[4]), (x1, y1 -10 ), label_font, 1, bgr, 1) #Put a label over box
+                    cv2.circle(cv_image, (x_cen, y_cen), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
+                    cv2.putText(cv_image, "{}: {:.2f}".format(classes[label], cord[4]), (x1, y1 -10 ), label_font, 1, bgr, 2) #Put a label over box
 
 
             msg = self.bridge.cv2_to_imgmsg(cv_image, "passthrough")
@@ -130,7 +149,7 @@ if __name__ == '__main__':
     
     rospy.init_node('fusion', anonymous=True)  
     sensor_fusion = fusion() 
-    sensor_fusion.run()
+    sensor_fusion.run(10)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()

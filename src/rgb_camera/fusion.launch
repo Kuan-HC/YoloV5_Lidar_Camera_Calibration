@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="fusion" pkg="rgb_camera"  type="fusion.py" output="screen" required="true"/>
+
+</launch>

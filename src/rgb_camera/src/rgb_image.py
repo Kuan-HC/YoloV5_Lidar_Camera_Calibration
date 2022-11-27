@@ -179,13 +179,10 @@ class RGB_Img_Detect:
     def show(self):
         print("[+] Show camera image!")
         self.init_ros()
-        cv2.namedWindow('Show image, ESC to close', cv2.WINDOW_NORMAL)
 
         while not rospy.is_shutdown():  
             ret, frame = self.read()
-            if ret == True:
-                cv2.imshow('Show image, ESC to close', frame)
-                
+            if ret == True:                
                 '''
                 ros send image msg
                 '''
@@ -194,11 +191,7 @@ class RGB_Img_Detect:
                 header.stamp = rospy.Time.now()
                 msg.header = header
                 self.pub.publish(msg)
-
             self.rate.sleep()
-            key = cv2.waitKey(10)
-            if key == 27:
-                break
 
         self.close()             
 
