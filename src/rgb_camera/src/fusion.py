@@ -124,13 +124,15 @@ class fusion:
                         for y in range(y_min, y_max):
                             if distArray[x][y] > 0.0:
                                 dist.append(distArray[x][y])
-                    if len(dist) != 0:
-                        obj_dist = np.median(dist)
-                    else:
-                        obj_dist = 0.0
 
                     label_font = cv2.FONT_HERSHEY_DUPLEX #Font for the label.
-                    cv2.putText(cv_image, "{:.2f} m".format(obj_dist), (x_cen - 10, y_cen -10 ), label_font, 1 , bgr, 2) #Put a label over box                                      
+                    if len(dist) != 0:
+                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen - 20, y_cen -20 ), label_font, 1 , bgr, 2) #add dist info
+                    else:
+                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen - 20, y_cen -30 ), label_font, 1 , bgr, 2) #add dist info
+
+                    
+                                                          
                     cv2.rectangle(cv_image, (x1, y1), (x2, y2), bgr, 2) #Plot the boxes
                     cv2.circle(cv_image, (x_cen, y_cen), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
                     cv2.putText(cv_image, "{}: {:.2f}".format(classes[label], cord[4]), (x1, y1 -10 ), label_font, 1, bgr, 2) #Put a label over box
@@ -152,10 +154,7 @@ if __name__ == '__main__':
     sensor_fusion.run(10)  # this number is the search radius in the distance record array
 
     # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
-
-
-    
+    rospy.spin()    
 '''       
                 
 if __name__ == '__main__':
