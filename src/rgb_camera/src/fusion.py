@@ -73,6 +73,7 @@ class fusion:
         classes = self.model.names # Get the name of label index
         print("[+] Lidar data projection")
         print("[+] Object detection")
+        print("[+] Send ros topic: /fusion/image")
 
         while not rospy.is_shutdown():
             #t = time.time()

@@ -161,6 +161,7 @@ class RGB_Img_Detect:
         self.pub = rospy.Publisher('rgb_camera/image', Image, queue_size=1)
         self.bridge = CvBridge()
         self.rate = rospy.Rate(10) #10 Hz
+        print("[+] Sending ros topic: /rgb_camera/image")
 
 
     def read(self):
@@ -176,7 +177,7 @@ class RGB_Img_Detect:
         elif self.source == WEB_CAMERA:
             return self.cap.read()
 
-    def show(self):
+    def ros_msg(self):
         print("[+] Show camera image!")
         self.init_ros()
 
@@ -271,7 +272,8 @@ class RGB_Img_Detect:
             print("[+] HIK Camera closed!")
         else:
             self.cap.release()   
-            print("[+] WEB Camera closed!")         
+            print("[+] WEB Camera closed!")     
+        cv2.destroyAllWindows()    
      
 if __name__ == "__main__":      
 
@@ -282,8 +284,8 @@ if __name__ == "__main__":
     Defautl HIK camera out put is rectified image, if you want raw image please select
     RGB_Img_Detect(HIK_CAMERA, False)
     '''
-    device = RGB_Img_Detect(HIK_CAMERA)
-    device.show()
+    device = RGB_Img_Detect(WEB_CAMERA)
+    device.ros_msg()
 
     
 
