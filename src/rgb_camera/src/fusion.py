@@ -149,7 +149,7 @@ if __name__ == '__main__':
     
     rospy.init_node('fusion', anonymous=True)  
     sensor_fusion = fusion() 
-    sensor_fusion.run(10)
+    sensor_fusion.run(10)  # this number is the search radius in the distance record array
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
