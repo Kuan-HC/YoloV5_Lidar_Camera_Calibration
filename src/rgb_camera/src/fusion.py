@@ -25,6 +25,7 @@ sys.path.append("/home/kuan/Lidar_Projection/src/yolov5")
 from utils.plots import colors
 
 import torch
+import time
 
 
 
@@ -74,6 +75,7 @@ class fusion:
         print("[+] Object detection")
 
         while not rospy.is_shutdown():
+            #t = time.time()
             #print("[+] queue size: {val}".format(val = self.dataQue.qsize()))
             data = self.dataQue.get()
         
@@ -127,16 +129,15 @@ class fusion:
 
                     label_font = cv2.FONT_HERSHEY_DUPLEX #Font for the label.
                     if len(dist) != 0:
-                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen - 20, y_cen -20 ), label_font, 1 , bgr, 2) #add dist info
+                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen + 20, y_cen ), label_font, 1 , bgr, 2) #add dist info
                     else:
-                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen - 20, y_cen -30 ), label_font, 1 , bgr, 2) #add dist info
-
-                    
-                                                          
+                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen + 20, y_cen ), label_font, 1 , bgr, 2) #add dist info
+                                                                             
                     cv2.rectangle(cv_image, (x1, y1), (x2, y2), bgr, 2) #Plot the boxes
                     cv2.circle(cv_image, (x_cen, y_cen), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
                     cv2.putText(cv_image, "{}: {:.2f}".format(classes[label], cord[4]), (x1, y1 -10 ), label_font, 1, bgr, 2) #Put a label over box
 
+            #print("[+] Inference cost {:.3f} seconds".format(time.time() - t))
 
             msg = self.bridge.cv2_to_imgmsg(cv_image, "passthrough")
             header = Header()
