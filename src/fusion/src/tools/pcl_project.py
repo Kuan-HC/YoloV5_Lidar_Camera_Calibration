@@ -12,7 +12,10 @@ import argparse
 abs = os.path.abspath(__file__) #current path
 parent_path = os.path.dirname(abs)
 parent_path = os.path.dirname(parent_path)
+parent_path = os.path.dirname(parent_path)
+
 package_path = parent_path
+print("[+] package_path:{}".format(package_path))
 
 
 class pcl_projection:
@@ -83,12 +86,6 @@ class pcl_projection:
         key = cv2.waitKey(0)
         if key == 27:
             cv2.destroyAllWindows()
-    
-    
-
-       
-
-
 
 def get_args():
     parser = argparse.ArgumentParser(description='pcd_visual')

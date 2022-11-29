@@ -18,7 +18,7 @@ import numpy as np
 import cv2
 import sys
 
-from pcl_project import pcl_projection
+from tools.pcl_project import pcl_projection
 
 # For yolo detection
 sys.path.append("/home/kuan/Lidar_Projection/src/yolov5")

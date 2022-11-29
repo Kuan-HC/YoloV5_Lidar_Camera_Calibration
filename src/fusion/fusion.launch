@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="fusion" pkg="fusion"  type="fusion.py" output="screen" required="true"/>
+
+</launch>

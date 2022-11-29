@@ -284,7 +284,7 @@ if __name__ == "__main__":
     Defautl HIK camera out put is rectified image, if you want raw image please select
     RGB_Img_Detect(HIK_CAMERA, False)
     '''
-    device = RGB_Img_Detect(WEB_CAMERA)
+    device = RGB_Img_Detect(HIK_CAMERA)
     device.ros_msg()
 
     

@@ -3,7 +3,7 @@ xterm  -e  "source ../devel/setup.bash --extend; roslaunch ouster_ros sensor.lau
 sleep 6
 xterm  -e  "source ../devel/setup.bash --extend; roslaunch rgb_camera rgb_image.launch"&  
 sleep 3
-xterm  -e  "source ../devel/setup.bash --extend; roslaunch rgb_camera fusion.launch"&  
+xterm  -e  "source ../devel/setup.bash --extend; roslaunch fusion fusion.launch"&  
 sleep 3
 xterm  -e  "source ../devel/setup.bash --extend; rosrun rviz rviz -d ../rviz/fusion.rviz"
 
