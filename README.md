@@ -58,3 +58,4 @@ cd ~/Lidar_Projection/shell
 * [HIKRobot RGB Camera](./hardware_setting/hikrobot_rgb.md)
 * [YOLOV5](https://github.com/ultralytics/yolov5)
 * [Ouster Lidar](./hardware_setting/ouster_lidar_config.md)
+* [CUDA CUDnn](https://github.com/Kuan-HC/Install-CUDA-and-CuDNN-on-Ubuntu-18.04-LTS)
