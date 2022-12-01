@@ -11,7 +11,7 @@ Calibration methods please refer to [Livox tutorial](https://github.com/Kuan-HC/
 > conda activate thermo  
 ./lidar_camera.sh 
 
-<img src="img/recording_1.png" width = "800">
+<img src="markdown/img/recording_1.png" width = "800">
 
 4. Record topics: <b>/rgb_camera/image</b> ,and  <b>/ouster/points</b> by:  
 ```
@@ -19,7 +19,7 @@ rosbag record /rgb_camera/image /ouster/points
 ```
 in this example, the rosbag file was saved in Lidar_Projection/training/data.
 
-<img src="img/recording_1_1.png" width = "800">
+<img src="markdown/img/recording_1_1.png" width = "800">
 
 
 &emsp;&emsp;Once the bag file is created, it can be replay by command:  
@@ -45,11 +45,11 @@ in this example, the rosbag file was saved in Lidar_Projection/training/data.
    conda deactivate           
    python rosbag_sampler.py --rate 20 --bag data/xxx.bag
    ```
-   <img src="img/recording_2.png" width = "800">
+   <img src="markdown/img/recording_2.png" width = "800">
 
 6. Result:  
    A folder with the input bag file name shall be created. It includes three sub-folders <b>meta</b>, <b>point_cloud_bin</b>, <b>point_cloud_pcd</b>, <b>rgb</b>,and <b>thermo</b>
-   <img src="img/recording_3.png" width = "800">
+   <img src="markdown/img/recording_3.png" width = "800">
 
 7. Visualization:   
    In this example, a pcd file is visualized by open3d  
@@ -59,9 +59,9 @@ in this example, the rosbag file was saved in Lidar_Projection/training/data.
    <b>visualization pcd</b> 
    > python pcd_visual.py --file {file_path}
 
-   <img src="img/recording_4.png" width = "800">
+   <img src="markdown/img/recording_4.png" width = "800">
 
-   <img src="img/recording_5.png" width = "800">
+   <img src="markdown/img/recording_5.png" width = "800">
 
 
    

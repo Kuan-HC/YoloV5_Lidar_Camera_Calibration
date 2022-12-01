@@ -105,7 +105,7 @@ class fusion:
                     pretrained yolo5m classes: For demo just select the first 7 object type
                     'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck'
                     '''
-                    if cord[4] < 0.5  or label > 7: 
+                    if cord[4] < 0.4  or label > 7: 
                         continue
                     
                     x1 = int(cord[0]*self.img_width)
@@ -130,9 +130,9 @@ class fusion:
 
                     label_font = cv2.FONT_HERSHEY_DUPLEX #Font for the label.
                     if len(dist) != 0:
-                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen + 20, y_cen ), label_font, 1 , bgr, 2) #add dist info
+                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen + 20, y_cen ), label_font, 2 , bgr, 3) #add dist info
                     else:
-                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen + 20, y_cen ), label_font, 1 , bgr, 2) #add dist info
+                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen + 20, y_cen ), label_font, 1 , bgr, 3) #add dist info
                                                                              
                     cv2.rectangle(cv_image, (x1, y1), (x2, y2), bgr, 2) #Plot the boxes
                     cv2.circle(cv_image, (x_cen, y_cen), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
