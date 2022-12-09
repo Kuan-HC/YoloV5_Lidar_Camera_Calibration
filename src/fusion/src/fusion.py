@@ -39,7 +39,7 @@ class fusion:
         self.sync.registerCallback(self.callback)
         
         self.bridge = CvBridge()
-        self.projection = pcl_projection()
+        self.projection = pcl_projection(max_depth, min_depth)
         self.max_depth = max_depth
         self.min_depth = min_depth
 
