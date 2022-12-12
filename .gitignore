@@ -8,3 +8,4 @@ devel
 
 src/rgb_camera/MvImport/__pycache__
 src/rgb_camera/src/__pycache__
+src/thermo_camera/src/tools/__pycache__

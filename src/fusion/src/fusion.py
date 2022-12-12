@@ -12,7 +12,10 @@ from cv_bridge import CvBridge
 
 # msg sync
 import message_filters
-import queue
+from collections import deque
+import threading
+
+thread_lock = threading.Lock()
 
 import numpy as np
 import cv2
@@ -35,7 +38,7 @@ class fusion:
         self.image  = message_filters.Subscriber("/rgb_camera/image", Image)
         self.lidar  = message_filters.Subscriber("/ouster/points", PointCloud2)
         # TimeSynchronizer is not working for our devices
-        self.sync = message_filters.ApproximateTimeSynchronizer([self.image, self.lidar], queue_size=5, slop=0.05)
+        self.sync = message_filters.ApproximateTimeSynchronizer([self.image, self.lidar], queue_size=10, slop=0.05)
         self.sync.registerCallback(self.callback)
         
         self.bridge = CvBridge()
@@ -45,7 +48,7 @@ class fusion:
 
         self.pub = rospy.Publisher('fusion/image', Image, queue_size=1)
         self.counter = 0
-        self.dataQue = queue.Queue(10)
+        self.dataQue = deque(maxlen = 20)
         self.img_width = img_width
         self.img_height = img_height
 
@@ -64,7 +67,9 @@ class fusion:
         print("[+] Load Yolov5")
 
     def callback(self, msg_img, msg_lidar ): 
-        self.dataQue.put([msg_img, msg_lidar])
+        thread_lock.acquire()
+        self.dataQue.append([msg_img, msg_lidar])
+        thread_lock.release()
         # For debug
         # print("[+] image:", msg_img.header.stamp.to_sec())
         # print("[+] lidar:", msg_lidar.header.stamp.to_sec())     
@@ -76,9 +81,16 @@ class fusion:
         print("[+] Send ros topic: /fusion/image")
 
         while not rospy.is_shutdown():
+
+            if(len(self.dataQue) == 0):
+                continue
+
             #t = time.time()
-            #print("[+] queue size: {val}".format(val = self.dataQue.qsize()))
-            data = self.dataQue.get()
+            
+            thread_lock.acquire()
+            data = self.dataQue.pop()
+            self.dataQue.clear()
+            thread_lock.release()
         
             msg_img = data[0]
             msg_lidar = data[1]
@@ -130,9 +142,9 @@ class fusion:
 
                     label_font = cv2.FONT_HERSHEY_DUPLEX #Font for the label.
                     if len(dist) != 0:
-                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen + 20, y_cen ), label_font, 2 , bgr, 3) #add dist info
+                        cv2.putText(cv_image, "{:.2f} m".format(np.median(dist)), (x_cen + 20, y_cen + 10 ), label_font, 1, bgr, 2) #add dist info
                     else:
-                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen + 20, y_cen ), label_font, 1 , bgr, 3) #add dist info
+                        cv2.putText(cv_image, "{}".format("N/A"), (x_cen + 20, y_cen + 10 ), label_font, 1 , bgr, 2) #add dist info
                                                                              
                     cv2.rectangle(cv_image, (x1, y1), (x2, y2), bgr, 2) #Plot the boxes
                     cv2.circle(cv_image, (x_cen, y_cen), 10, bgr, 2)  # position, radius, color thickness(-1 fill) 
@@ -144,10 +156,7 @@ class fusion:
             header = Header()
             header.stamp = rospy.Time.now()
             msg.header = header
-            self.pub.publish(msg)
-
-            while(self.dataQue.qsize() > 1):
-                self.dataQue.get()       
+            self.pub.publish(msg)       
     
 if __name__ == '__main__':
     
